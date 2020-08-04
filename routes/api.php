@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,9 +19,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/users', function(Request $request) {
-    $user1 = [
-        'message' => 'GetAllUsersController'
-    ];
-    return $request;
+Route::get('/users', function() {
+    return 'Users';
+});
+
+Route::get('/users/{user}', function(User $user) {
+    return $user;
 });

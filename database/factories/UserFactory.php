@@ -20,13 +20,12 @@ use Illuminate\Support\Str;
 $factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
-        'username' => $faker->username,
+        'username' => $faker->userName,
         'email' => $faker->safeEmail,
         'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
         'icon' => 'default.png',
         'about_me' => $faker->text($maxNbChars = 250),
         'email_verified_at' => now(),
-        'join_date' => now(),
-        'remember_token' => Str::random(10),
+        'remember_token' => Str::random(10)
     ];
 });
