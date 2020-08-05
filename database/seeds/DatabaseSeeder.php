@@ -15,5 +15,7 @@ class DatabaseSeeder extends Seeder
             $posts = factory(App\Post::class, 3)->make();
             $user->posts()->saveMany($posts);
         });
+
+        factory(App\Tag::class, 15)->create();
     }
 }
