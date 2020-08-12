@@ -23,11 +23,21 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return UserResource
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name'      => 'required',
+            'username'  => 'required',
+            'email'     => 'required',
+            'password'  => 'required',
+            'role'      => 'required',
+        ]);
+
+        $user = User::create($request->all());
+
+        return new UserResource($user);
     }
 
     /**
@@ -48,9 +58,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user) : UserResource
     {
-        //
+        $user->update($request->all());
+
+        return new UserResource($user);
     }
 
     /**
