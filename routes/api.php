@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\User;
+use App\Post;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/users', function() {
-    return 'Users';
-});
-
-Route::get('/users/{user}', function(User $user) {
-    return $user;
-});
+Route::apiResources([
+    'users' => 'UserController',
+    'posts' => 'PostController',
+]);

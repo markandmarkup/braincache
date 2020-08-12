@@ -19,6 +19,7 @@ class CreatePostsTable extends Migration
             $table->string('title', 100);
             $table->timestamp('last_edit_date')->nullable();
             $table->unsignedBigInteger('no_of_saves');
+            $table->enum('visibility', ['public', 'private'])->default('public');
             $table->timestamps();
             $table->softDeletes('deleted_at', 0);	
             $table->text('body');
