@@ -23,11 +23,19 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return PostResource
      */
-    public function store(Request $request)
+    public function store(Request $request) : PostResource
     {
-        //
+        $request->validate([
+            'user_id'   => 'required',
+            'title'     => 'required',
+            'body'      => 'required',
+        ]);
+
+        $post = Post::create($request->all());
+
+        return new PostResource($post);
     }
 
     /**
@@ -45,22 +53,26 @@ class PostController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Post $post   // id of the post to be updated
+     * @return PostResource
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post) : PostResource
     {
-        //
+        $post->update($request->all());
+
+        return new PostResource($post);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Post $post   // id of the post to be updated
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        //
+        $post->delete();
+
+        return response()->json();
     }
 }

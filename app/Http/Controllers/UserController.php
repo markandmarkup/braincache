@@ -25,7 +25,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return UserResource
      */
-    public function store(Request $request)
+    public function store(Request $request) : UserResource
     {
         $request->validate([
             'name'      => 'required',
@@ -43,7 +43,7 @@ class UserController extends Controller
     /**
      * Return the specified resource.
      *
-     * @param  User  $user
+     * @param  User  $user  // Id of the user to be updated
      * @return UserResource
      */
     public function show(User $user) : UserResource
@@ -55,8 +55,8 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  User $user   // Id of the user to be updated
+     * @return UserResource
      */
     public function update(Request $request, User $user) : UserResource
     {
@@ -68,11 +68,13 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  User $user   // Id of the user to be updated
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return response()->json();
     }
 }
