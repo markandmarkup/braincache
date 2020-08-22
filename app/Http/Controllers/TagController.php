@@ -10,16 +10,32 @@ use Illuminate\Support\Carbon;
 class TagController extends Controller
 {
 
-    /** Removes tag names that already exist in the database
+    /** Finds tag names in the db, inserts them if new
      * 
-     * @param Array $tagnames   // array of string values to be compared against the db
-     * @return Array    // all values that do not have a match in the db
+     * @param Array $tagnames   // string array of tag names
+     * @return TagResourceCollection    // collection of all tags found or inserted
      */
-    public function filterExistingTagsByName(Array $tagNames) : Array
+    public function getByNameOrInsert(Array $tagNames) : TagResourceCollection
     {
-        $existingTags = Tag::whereIn('name', $tagNames)->pluck('name');
+        $tagCollectionResult = $this->getTagsByName($tagNames);
 
-        return array_diff($tagNames, $existingTags->all());
+        $existingNames = $tagCollectionResult->map(function($tagResource) {
+            return $tagResource->name;
+        });
+
+        $inserts = $this->storeMany(array_diff($tagNames, $existingNames->all()));
+
+        return new TagResourceCollection($tagCollectionResult->concat($inserts->all()));
+    }
+
+    /** Finds all existing recordsby name from a given array
+     * 
+     * @param Array $tagnames   // array of string values to be retrieved from the db
+     * @return TagResourceCollection
+     */
+    public function getTagsByName(Array $tagNames) : TagResourceCollection
+    {
+        return new TagResourceCollection(Tag::whereIn('name', $tagNames)->get());
     }
 
     /** Takes an array of tag names and inserts each one as a new db row
@@ -41,6 +57,6 @@ class TagController extends Controller
 
         Tag::insert($tagArray);
 
-        return new TagResourceCollection(Tag::where('created_at', $now)->get());
+        return new TagResourceCollection(Tag::whereIn('name', $tagNames)->get());
     }
 }
