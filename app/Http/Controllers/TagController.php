@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\TagResourceCollection;
 use Illuminate\Http\Request;
 use App\Tag;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 
 class TagController extends Controller
@@ -13,9 +14,9 @@ class TagController extends Controller
     /** Finds tag names in the db, inserts them if new
      * 
      * @param Array $tagnames   // string array of tag names
-     * @return TagResourceCollection    // collection of all tags found or inserted
+     * @return Collection    // collection of all tags found or inserted
      */
-    public function getByNameOrInsert(Array $tagNames) : TagResourceCollection
+    public function getByNameOrInsert(Array $tagNames) : Collection
     {
         $tagCollectionResult = $this->getTagsByName($tagNames);
 
@@ -25,7 +26,7 @@ class TagController extends Controller
 
         $inserts = $this->storeMany(array_diff($tagNames, $existingNames->all()));
 
-        return new TagResourceCollection($tagCollectionResult->concat($inserts->all()));
+        return $tagCollectionResult->concat($inserts->all());
     }
 
     /** Finds all existing recordsby name from a given array
@@ -33,9 +34,9 @@ class TagController extends Controller
      * @param Array $tagnames   // array of string values to be retrieved from the db
      * @return TagResourceCollection
      */
-    public function getTagsByName(Array $tagNames) : TagResourceCollection
+    public function getTagsByName(Array $tagNames) : Collection
     {
-        return new TagResourceCollection(Tag::whereIn('name', $tagNames)->get());
+        return Tag::whereIn('name', $tagNames)->get();
     }
 
     /** Takes an array of tag names and inserts each one as a new db row
@@ -43,7 +44,7 @@ class TagController extends Controller
      * @param Array $tagNames   // simple string array of tag 'name' fields
      * @return TagResourceCollection    // returns collection of Tags matching the date of the $now value
      */
-    public function storeMany(Array $tagNames) : TagResourceCollection
+    public function storeMany(Array $tagNames) : Collection
     {
         $now = Carbon::now();
 
@@ -57,6 +58,6 @@ class TagController extends Controller
 
         Tag::insert($tagArray);
 
-        return new TagResourceCollection(Tag::whereIn('name', $tagNames)->get());
+        return Tag::whereIn('name', $tagNames)->get();
     }
 }

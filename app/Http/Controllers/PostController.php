@@ -25,7 +25,7 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return PostResource
      */
-    public function store(Request $request) : PostResource
+    public function store(Request $request) // : PostResource
     {
         $request->validate([
             'user_id'   => 'required',
@@ -34,6 +34,13 @@ class PostController extends Controller
         ]);
 
         $post = Post::create($request->all());
+
+        if ($request->filled('tags')) { // TODO check that the array is filled, not just present!
+            $tagController = new TagController;
+            $tagCollection = $tagController->getByNameOrInsert($request->input('tags'));
+
+            $post->tags()->attach($tagCollection);
+        }
 
         return new PostResource($post);
     }
